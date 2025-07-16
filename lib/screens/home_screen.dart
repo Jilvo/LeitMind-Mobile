@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'question_screen.dart';
+import 'profile_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -114,6 +115,102 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                   icon: const Icon(Icons.add_circle_outline),
                   label: const Text("S’abonner à de nouveaux thèmes"),
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: Color(0xFF3B3F9F)),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    foregroundColor: const Color(0xFF3B3F9F),
+                    textStyle: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),const SizedBox(height: 16),
+                OutlinedButton.icon(
+                  onPressed: () {
+                    // Logique d’abonnement ou navigation
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Fonction 'S’abonner' à venir !")),
+                    );
+                  },
+                  icon: const Icon(Icons.add_circle_outline),
+                  label: const Text("Historiques de mes reponses"),
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: Color(0xFF3B3F9F)),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    foregroundColor: const Color(0xFF3B3F9F),
+                    textStyle: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),const SizedBox(height: 16),
+                OutlinedButton.icon(
+                  onPressed: () {
+                    // Logique d’abonnement ou navigation
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Fonction 'Historiques' à venir !")),
+                    );
+                  },
+                  icon: const Icon(Icons.add_circle_outline),
+                  label: const Text("Voir mon score"),
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: Color(0xFF3B3F9F)),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    foregroundColor: const Color(0xFF3B3F9F),
+                    textStyle: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),const SizedBox(height: 16),
+                OutlinedButton.icon(
+                  onPressed: () {
+                    // Logique d’abonnement ou navigation
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Fonction 'S’abonner' à venir !")),
+                    );
+                  },
+                  icon: const Icon(Icons.add_circle_outline),
+                  label: const Text("Voir le classement"),
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: Color(0xFF3B3F9F)),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    foregroundColor: const Color(0xFF3B3F9F),
+                    textStyle: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),const SizedBox(height: 16),
+                OutlinedButton.icon(
+                  onPressed: () {
+                    // Logique d’abonnement ou navigation
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const ProfileScreen()),
+                    );
+                  },
+                  icon: const Icon(Icons.add_circle_outline),
+                  label: const Text("Profil page"),
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: Color(0xFF3B3F9F)),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    foregroundColor: const Color(0xFF3B3F9F),
+                    textStyle: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),const SizedBox(height: 16),
+                OutlinedButton.icon(
+                  onPressed: () {
+                    // Logique d’abonnement ou navigation
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Fonction 'S’abonner' à venir !")),
+                    );
+                  },
+                  icon: const Icon(Icons.add_circle_outline),
+                  label: const Text("Stats (Admin)"),
                   style: OutlinedButton.styleFrom(
                     side: const BorderSide(color: Color(0xFF3B3F9F)),
                     padding: const EdgeInsets.symmetric(vertical: 16),

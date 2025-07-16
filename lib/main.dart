@@ -4,7 +4,8 @@ import 'screens/login_screen.dart';
 import 'screens/register_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/onboarding_screen.dart';
-import 'screens/init_screen.dart'; // ← ajout ici
+import 'screens/init_screen.dart';
+import 'screens/profile_screen.dart';
 
 Future<void> main() async {
   await dotenv.load();
@@ -24,6 +25,7 @@ class LeitMindApp extends StatelessWidget {
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const RegisterScreen(),
         '/home': (context) => const HomeScreen(),
+        '/profile': (context) => const ProfileScreen(),
       },
     );
   }

@@ -24,7 +24,10 @@ class AuthService {
         final prefs = await SharedPreferences.getInstance();
         final token = data['access_token'];
         await prefs.setString('token', token);
+        print(data["user"]);
         await prefs.setString("username", data["user"]["username"]);
+        await prefs.setString("email", data["user"]["email"]);
+        await prefs.setString("userId", data["user"]["user_id"]);
         return (true, "Connexion réussie");
       }
       final rawDetail = data["detail"]["message"];
