@@ -37,11 +37,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
       email = prefs.getString("email") ?? 'email@exemple.com';
       avatarUrl = prefs.getString("avatarUrl") ?? null;
       userId = prefs.getString("userId") ?? '';
-      print("**********************username URL: $username");
-      print("**********************email URL: $email");
-      print("**********************avatarUrl URL: $avatarUrl");
-      print("**********************userId URL: $userId");
     });
+    if (avatarUrl == null || avatarUrl!.isEmpty) {
+      await fetchAvatarUrlFromApi();
+    }
   }
   Future<void> _getImage(ImageSource source) async {
     final picker = ImagePicker();
@@ -121,6 +120,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
       );
     }
   }
+  Future<void> fetchAvatarUrlFromApi() async {
+    if (userId == null || userId!.isEmpty) return;
+    final uri = Uri.parse("$baseUrl/auth/users/$userId/avatar");
+    try {
+      final response = await http.get(uri);
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final apiAvatarUrl = data["avatar_url"]?.toString();
+        if (apiAvatarUrl != null && apiAvatarUrl.isNotEmpty) {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString("avatarUrl", apiAvatarUrl);
+          setState(() {
+            avatarUrl = apiAvatarUrl;
+          });
+        }
+      }
+    } catch (e) {
+      print("Erreur lors de la récupération de l'avatar : $e");
+    }
+  }
+
 
   Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();
