@@ -15,6 +15,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final confirmPasswordController = TextEditingController();
   final authService = AuthService();
   bool loading = false;
+  bool showPassword = false;
 
   void _register() async {
     final email = emailController.text.trim();
@@ -45,6 +46,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
+  InputDecoration _inputDecoration(String label, IconData icon) {
+    return InputDecoration(
+      labelText: label,
+      prefixIcon: Icon(icon),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+      focusedBorder: OutlineInputBorder(
+        borderSide: const BorderSide(color: Color(0xFF3B3F9F), width: 2),
+        borderRadius: BorderRadius.circular(14),
+      ),
+      contentPadding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,6 +66,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
+        automaticallyImplyLeading: true,
         title: const Text(
           "Créer un compte",
           style: TextStyle(
@@ -60,83 +75,105 @@ class _RegisterScreenState extends State<RegisterScreen> {
             fontSize: 24,
           ),
         ),
+        iconTheme: const IconThemeData(color: Colors.indigo),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 48.0),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 64.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Text(
-              "Bienvenue ! 🎉",
-              style: TextStyle(
-                fontSize: 26,
-                fontWeight: FontWeight.w700,
-                color: Colors.black87,
-              ),
+            // Illustration optionnelle
+            SizedBox(
+              height: 140,
+              child: Image.asset('assets/images/basic_mascotte.png'), // à ajouter dans assets
             ),
             const SizedBox(height: 24),
+            const Text(
+              "Bienvenue sur LeitMind 🎉",
+              style: TextStyle(
+                fontSize: 26,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF3B3F9F),
+              ),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              "Crée ton compte et commence ton apprentissage !",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.black54,
+              ),
+            ),
+            const SizedBox(height: 32),
+
             TextField(
               controller: emailController,
-              decoration: InputDecoration(
-                labelText: "Email",
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-              ),
               keyboardType: TextInputType.emailAddress,
+              decoration: _inputDecoration("Email", Icons.email),
             ),
             const SizedBox(height: 16),
             TextField(
               controller: passwordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                labelText: "Mot de passe",
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+              obscureText: !showPassword,
+              decoration: _inputDecoration("Mot de passe", Icons.lock).copyWith(
+                suffixIcon: IconButton(
+                  icon: Icon(
+                      showPassword ? Icons.visibility_off : Icons.visibility),
+                  onPressed: () =>
+                      setState(() => showPassword = !showPassword),
+                ),
               ),
             ),
             const SizedBox(height: 16),
             TextField(
               controller: confirmPasswordController,
               obscureText: true,
-              decoration: InputDecoration(
-                labelText: "Confirmer le mot de passe",
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-              ),
+              decoration: _inputDecoration("Confirmer le mot de passe", Icons.lock_outline),
             ),
             const SizedBox(height: 32),
+
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: loading ? null : _register,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.indigo,
+                  backgroundColor: const Color(0xFF3B3F9F),
                   padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
                 ),
                 child: loading
                     ? const CircularProgressIndicator(color: Colors.white)
                     : const Text(
                   "S'inscrire",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
               ),
-            ),Row(
+            ),
+
+            const SizedBox(height: 24),
+            Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("Déjà inscrit ? "),
+                const Text("Déjà un compte ? "),
                 GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, '/login');
-                  },
+                  onTap: () => Navigator.pushNamed(context, '/login'),
                   child: const Text(
                     "Se connecter",
                     style: TextStyle(
-                      color: Colors.indigo,
-                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF3B3F9F),
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
               ],
             ),
-
           ],
         ),
       ),

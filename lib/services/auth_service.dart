@@ -16,16 +16,19 @@ class AuthService {
       );
 
       final data = jsonDecode(res.body);
-      final rawDetail = data["detail"]["message"];
-      print("Raw detail: $data");
-      final detail = rawDetail is String ? rawDetail : "Erreur inconnue";
+      print("**********************Response status: ${res.statusCode}");
+      print("**********************Raw detail: $data");
 
       if (res.statusCode == 200) {
+        print("**********************Login successful");
         final prefs = await SharedPreferences.getInstance();
         final token = data['access_token'];
         await prefs.setString('token', token);
+        await prefs.setString("username", data["user"]["username"]);
         return (true, "Connexion réussie");
       }
+      final rawDetail = data["detail"]["message"];
+      final detail = rawDetail is String ? rawDetail : "Erreur inconnue";
 
       return (false, detail);
     } catch (e) {

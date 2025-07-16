@@ -4,6 +4,7 @@ import 'screens/login_screen.dart';
 import 'screens/register_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/onboarding_screen.dart';
+import 'screens/init_screen.dart'; // ← ajout ici
 
 Future<void> main() async {
   await dotenv.load();
@@ -18,9 +19,8 @@ class LeitMindApp extends StatelessWidget {
     return MaterialApp(
       title: 'LeitMind',
       theme: ThemeData(primarySwatch: Colors.indigo),
-      initialRoute: '/',
+      home: const InitScreen(), // ← remplace initialRoute
       routes: {
-        '/': (context) => const OnboardingScreen(),
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const RegisterScreen(),
         '/home': (context) => const HomeScreen(),
