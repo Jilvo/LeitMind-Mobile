@@ -6,6 +6,10 @@ import 'screens/home_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/init_screen.dart';
 import 'screens/profile_screen.dart';
+import 'screens/my_score_screen.dart';
+import 'screens/leaderboard_screen.dart';
+import 'screens/answers_history_screen.dart';
+import 'screens/subscribe_theme_screen.dart';
 
 Future<void> main() async {
   await dotenv.load();
@@ -26,6 +30,10 @@ class LeitMindApp extends StatelessWidget {
         '/register': (context) => const RegisterScreen(),
         '/home': (context) => const HomeScreen(),
         '/profile': (context) => const ProfileScreen(),
+        '/my-score': (context) => const MyScoreScreen(),
+        '/leaderboard': (context) => const LeaderboardScreen(),
+        '/answers-history': (context) => const AnswersHistoryScreen(),
+        '/subscribe-to-theme': (context) => const SubscribeThemesScreen(),
       },
     );
   }

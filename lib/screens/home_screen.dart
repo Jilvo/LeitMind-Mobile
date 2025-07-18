@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:leitmind_mobile/screens/my_score_screen.dart';
+import 'leaderboard_screen.dart';
 import 'question_screen.dart';
 import 'profile_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'answers_history_screen.dart';
+import 'subscribe_theme_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -108,9 +112,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 16),
                 OutlinedButton.icon(
                   onPressed: () {
-                    // Logique d’abonnement ou navigation
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Fonction 'S’abonner' à venir !")),
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const SubscribeThemesScreen()),
                     );
                   },
                   icon: const Icon(Icons.add_circle_outline),
@@ -127,9 +131,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),const SizedBox(height: 16),
                 OutlinedButton.icon(
                   onPressed: () {
-                    // Logique d’abonnement ou navigation
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Fonction 'S’abonner' à venir !")),
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const AnswersHistoryScreen()),
                     );
                   },
                   icon: const Icon(Icons.add_circle_outline),
@@ -146,9 +150,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),const SizedBox(height: 16),
                 OutlinedButton.icon(
                   onPressed: () {
-                    // Logique d’abonnement ou navigation
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Fonction 'Historiques' à venir !")),
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const MyScoreScreen()),
                     );
                   },
                   icon: const Icon(Icons.add_circle_outline),
@@ -165,9 +169,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),const SizedBox(height: 16),
                 OutlinedButton.icon(
                   onPressed: () {
-                    // Logique d’abonnement ou navigation
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Fonction 'S’abonner' à venir !")),
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const LeaderboardScreen()),
                     );
                   },
                   icon: const Icon(Icons.add_circle_outline),
@@ -184,7 +188,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),const SizedBox(height: 16),
                 OutlinedButton.icon(
                   onPressed: () {
-                    // Logique d’abonnement ou navigation
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (_) => const ProfileScreen()),

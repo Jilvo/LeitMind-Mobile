@@ -17,7 +17,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
   bool showFeedback = false;
 
   void _selectAnswer(int index) {
-    if (selectedIndex != null) return; // Évite double clic
+    if (selectedIndex != null) return;
 
     setState(() {
       selectedIndex = index;
@@ -42,11 +42,12 @@ class _QuestionScreenState extends State<QuestionScreen> {
         title: const Text(
           "Question du jour",
           style: TextStyle(
-            color: Colors.indigo,
+            color: Color(0xFF3B3F9F),
             fontWeight: FontWeight.bold,
-            fontSize: 22,
+            fontSize: 24,
           ),
         ),
+        iconTheme: const IconThemeData(color: Color(0xFF3B3F9F)),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
@@ -56,7 +57,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
             Text(
               question,
               style: const TextStyle(
-                fontSize: 24,
+                fontSize: 22,
                 fontWeight: FontWeight.w700,
                 color: Colors.black87,
               ),
@@ -67,14 +68,14 @@ class _QuestionScreenState extends State<QuestionScreen> {
                 padding: const EdgeInsets.only(bottom: 16),
                 child: InkWell(
                   onTap: () => _selectAnswer(index),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(16),
                   child: Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
+                    padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                     decoration: BoxDecoration(
                       color: _cardColor(index),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.indigo, width: 1.5),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: const Color(0xFF3B3F9F), width: 1.5),
                     ),
                     child: Text(
                       answers[index],
@@ -94,18 +95,18 @@ class _QuestionScreenState extends State<QuestionScreen> {
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: Colors.indigo.shade50,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.indigo, width: 1),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: const Color(0xFF3B3F9F), width: 1),
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Icon(Icons.info_outline, color: Colors.indigo),
+                    const Icon(Icons.info_outline, color: Color(0xFF3B3F9F)),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
                         explanation,
-                        style: const TextStyle(fontSize: 16, color: Colors.black87),
+                        style: const TextStyle(fontSize: 16, color: Colors.black87, height: 1.4),
                       ),
                     ),
                   ],
