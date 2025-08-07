@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/subscription_service.dart';
 
 class SubscribeThemesScreen extends StatefulWidget {
   const SubscribeThemesScreen({super.key});
@@ -8,35 +9,92 @@ class SubscribeThemesScreen extends StatefulWidget {
 }
 
 class _SubscribeThemesScreenState extends State<SubscribeThemesScreen> {
-  final List<Map<String, dynamic>> themes = [
-    {
-      'name': 'Histoire',
-      'description':
-      'Des origines à nos jours : explore les civilisations, les guerres et les révolutions.',
-      'icon': Icons.history_edu_outlined,
-    },
-    {
-      'name': 'Géographie',
-      'description':
-      'Découvre les continents, les pays, les capitales et les grands repères géo.',
-      'icon': Icons.public_outlined,
-    },
-    {
-      'name': 'Culture',
-      'description':
-      'Cinéma, littérature, art, musique : tout ce qui fait vibrer la société.',
-      'icon': Icons.palette_outlined,
-    },
-    {
-      'name': 'Géopolitique',
-      'description':
-      'Conflits, alliances, enjeux globaux : le monde d aujourd hui en perspective.',
-      'icon': Icons.language_outlined,
-    },
-  ];
+  final SubscriptionService _subscriptionService = SubscriptionService();
+  List<Map<String, dynamic>> themes = [];
+  Set<String> subscribed = {};
+  bool isLoading = true;
+  bool isSaving = false;
 
-  final Set<String> subscribed = {'Histoire', 'Culture'};
-  bool isLoading = false;
+  @override
+  void initState() {
+    super.initState();
+    _loadSubscriptions();
+  }
+
+  // Mapping des icônes par nom de catégorie
+  IconData _getIconForCategory(String categoryName) {
+    switch (categoryName.toLowerCase()) {
+      case 'histoire':
+        return Icons.history_edu_outlined;
+      case 'géographie':
+        return Icons.public_outlined;
+      case 'culture':
+        return Icons.palette_outlined;
+      case 'géopolitique':
+        return Icons.language_outlined;
+      case 'science':
+        return Icons.science_outlined;
+      case 'sport':
+        return Icons.sports_soccer_outlined;
+      case 'technologie':
+        return Icons.computer_outlined;
+      default:
+        return Icons.category_outlined;
+    }
+  }
+
+  // Mapping des descriptions par nom de catégorie
+  String _getDescriptionForCategory(String categoryName) {
+    switch (categoryName.toLowerCase()) {
+      case 'histoire':
+        return 'Des origines à nos jours : explore les civilisations, les guerres et les révolutions.';
+      case 'géographie':
+        return 'Découvre les continents, les pays, les capitales et les grands repères géo.';
+      case 'culture':
+        return 'Cinéma, littérature, art, musique : tout ce qui fait vibrer la société.';
+      case 'géopolitique':
+        return 'Conflits, alliances, enjeux globaux : le monde d\'aujourd\'hui en perspective.';
+      case 'science':
+        return 'Physique, chimie, biologie : les mystères de l\'univers à découvrir.';
+      case 'sport':
+        return 'Football, tennis, olympisme : l\'actualité sportive mondiale.';
+      case 'technologie':
+        return 'Innovation, IA, digital : les avancées qui transforment notre monde.';
+      default:
+        return 'Explorez cette catégorie passionnante.';
+    }
+  }
+
+  Future<void> _loadSubscriptions() async {
+    try {
+      final subscriptions = await _subscriptionService.getUserSubscriptions();
+      
+      setState(() {
+        themes = subscriptions.map((sub) => {
+          'category_id': sub['category_id'],
+          'name': sub['category_name'],
+          'description': _getDescriptionForCategory(sub['category_name']),
+          'icon': _getIconForCategory(sub['category_name']),
+        }).toList();
+        
+        subscribed = subscriptions
+            .where((sub) => sub['subscribed'] == true)
+            .map((sub) => sub['category_name'] as String)
+            .toSet();
+        
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Erreur lors du chargement des catégories")),
+        );
+      }
+    }
+  }
 
   void toggleSubscription(String theme) {
     setState(() {
@@ -49,25 +107,30 @@ class _SubscribeThemesScreenState extends State<SubscribeThemesScreen> {
   }
 
   Future<void> submitPreferences() async {
-    setState(() => isLoading = true);
+    setState(() => isSaving = true);
 
     try {
-      // Simule un appel réseau (remplace avec http.post si besoin)
-      await Future.delayed(const Duration(seconds: 1));
-
-      // TODO : POST subscribed.toList() au backend ici
+      final success = await _subscriptionService.updateUserSubscriptions(subscribed.toList());
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Préférences enregistrées")),
-        );
+        if (success) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Préférences enregistrées")),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Erreur lors de l'enregistrement")),
+          );
+        }
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Erreur lors de l'enregistrement")),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Erreur lors de l'enregistrement")),
+        );
+      }
     } finally {
-      if (mounted) setState(() => isLoading = false);
+      if (mounted) setState(() => isSaving = false);
     }
   }
 
@@ -88,7 +151,7 @@ class _SubscribeThemesScreenState extends State<SubscribeThemesScreen> {
         ),
         iconTheme: const IconThemeData(color: Color(0xFF3B3F9F)),
         actions: [
-          isLoading
+          isSaving
               ? const Padding(
             padding: EdgeInsets.only(right: 16),
             child: Center(
@@ -100,7 +163,7 @@ class _SubscribeThemesScreenState extends State<SubscribeThemesScreen> {
             ),
           )
               : TextButton(
-            onPressed: submitPreferences,
+            onPressed: isLoading ? null : submitPreferences,
             child: const Text(
               "Valider",
               style: TextStyle(
@@ -112,7 +175,19 @@ class _SubscribeThemesScreenState extends State<SubscribeThemesScreen> {
           ),
         ],
       ),
-      body: ListView.builder(
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : themes.isEmpty
+              ? const Center(
+                  child: Text(
+                    'Aucune catégorie disponible',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.grey,
+                    ),
+                  ),
+                )
+              : ListView.builder(
         padding: const EdgeInsets.all(24),
         itemCount: themes.length,
         itemBuilder: (context, index) {
@@ -146,8 +221,9 @@ class _SubscribeThemesScreenState extends State<SubscribeThemesScreen> {
                       ),
                       Switch(
                         value: isSubscribed,
-                        onChanged: (_) =>
-                            toggleSubscription(theme['name'] as String),
+                        onChanged: isLoading || isSaving 
+                            ? null 
+                            : (_) => toggleSubscription(theme['name'] as String),
                         activeColor: const Color(0xFF3B3F9F),
                       ),
                     ],

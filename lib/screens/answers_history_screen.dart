@@ -1,30 +1,37 @@
 import 'package:flutter/material.dart';
+import '../services/attempt_service.dart';
 
-class AnswersHistoryScreen extends StatelessWidget {
+class AnswersHistoryScreen extends StatefulWidget {
   const AnswersHistoryScreen({super.key});
 
-  final List<Map<String, dynamic>> history = const [
-    {
-      'question': 'Quelle est la capitale de la France ?',
-      'correct': true,
-      'answer': 'Paris',
-    },
-    {
-      'question': 'En quelle année a commencé la Seconde Guerre mondiale ?',
-      'correct': false,
-      'answer': '1938',
-    },
-    {
-      'question': 'Quel est le fleuve qui traverse Lyon ?',
-      'correct': true,
-      'answer': 'Le Rhône',
-    },
-    {
-      'question': 'Qui a peint la Joconde ?',
-      'correct': false,
-      'answer': 'David Bowie',
-    },
-  ];
+  @override
+  State<AnswersHistoryScreen> createState() => _AnswersHistoryScreenState();
+}
+
+class _AnswersHistoryScreenState extends State<AnswersHistoryScreen> {
+  final AttemptService _attemptService = AttemptService();
+  List<Map<String, dynamic>> history = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadAttempts();
+  }
+
+  Future<void> _loadAttempts() async {
+    try {
+      final attempts = await _attemptService.getUserAttempts();
+      setState(() {
+        history = attempts;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,12 +50,26 @@ class AnswersHistoryScreen extends StatelessWidget {
         ),
         iconTheme: const IconThemeData(color: Color(0xFF3B3F9F)),
       ),
-      body: ListView.builder(
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : history.isEmpty
+              ? const Center(
+                  child: Text(
+                    'Vous n\'avez répondu à aucune question',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.grey,
+                    ),
+                  ),
+                )
+              : ListView.builder(
         padding: const EdgeInsets.all(24),
         itemCount: history.length,
         itemBuilder: (context, index) {
           final item = history[index];
-          final isCorrect = item['correct'] as bool;
+          final isCorrect = item['correct'] as bool? ?? false;
+          final question = item['question']?.toString() ?? 'Question non disponible';
+          final answer = item['answer']?.toString() ?? 'Réponse non disponible';
 
           return Card(
             margin: const EdgeInsets.only(bottom: 16),
@@ -59,7 +80,7 @@ class AnswersHistoryScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    item['question'],
+                    question,
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -73,7 +94,7 @@ class AnswersHistoryScreen extends StatelessWidget {
                       const Icon(Icons.check_circle, color: Colors.green),
                       const SizedBox(width: 8),
                       Text(
-                        item['answer'],
+                        answer,
                         style: const TextStyle(fontSize: 16, color: Colors.black87),
                       ),
                     ],
@@ -90,7 +111,7 @@ class AnswersHistoryScreen extends StatelessWidget {
                           ),
                           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                           child: Text(
-                            item['answer'],
+                            answer,
                             style: const TextStyle(
                               fontSize: 16,
                               color: Colors.grey,
