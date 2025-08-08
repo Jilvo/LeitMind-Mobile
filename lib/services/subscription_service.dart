@@ -38,7 +38,7 @@ class SubscriptionService {
     }
   }
 
-  Future<bool> updateUserSubscriptions(List<String> subscribedCategories) async {
+  Future<bool> updateUserSubscriptions(List<Map<String, dynamic>> subscriptions) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token');
@@ -53,7 +53,7 @@ class SubscriptionService {
         headers: {
           'Authorization': 'Bearer $token',
         },
-        body: jsonEncode({'categories': subscribedCategories}),
+        body: jsonEncode({'subscriptions': subscriptions}),
       );
 
       return response.statusCode == 200;

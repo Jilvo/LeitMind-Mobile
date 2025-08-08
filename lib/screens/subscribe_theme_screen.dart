@@ -43,28 +43,6 @@ class _SubscribeThemesScreenState extends State<SubscribeThemesScreen> {
     }
   }
 
-  // Mapping des descriptions par nom de catégorie
-  String _getDescriptionForCategory(String categoryName) {
-    switch (categoryName.toLowerCase()) {
-      case 'histoire':
-        return 'Des origines à nos jours : explore les civilisations, les guerres et les révolutions.';
-      case 'géographie':
-        return 'Découvre les continents, les pays, les capitales et les grands repères géo.';
-      case 'culture':
-        return 'Cinéma, littérature, art, musique : tout ce qui fait vibrer la société.';
-      case 'géopolitique':
-        return 'Conflits, alliances, enjeux globaux : le monde d\'aujourd\'hui en perspective.';
-      case 'science':
-        return 'Physique, chimie, biologie : les mystères de l\'univers à découvrir.';
-      case 'sport':
-        return 'Football, tennis, olympisme : l\'actualité sportive mondiale.';
-      case 'technologie':
-        return 'Innovation, IA, digital : les avancées qui transforment notre monde.';
-      default:
-        return 'Explorez cette catégorie passionnante.';
-    }
-  }
-
   Future<void> _loadSubscriptions() async {
     try {
       final subscriptions = await _subscriptionService.getUserSubscriptions();
@@ -73,7 +51,7 @@ class _SubscribeThemesScreenState extends State<SubscribeThemesScreen> {
         themes = subscriptions.map((sub) => {
           'category_id': sub['category_id'],
           'name': sub['category_name'],
-          'description': _getDescriptionForCategory(sub['category_name']),
+          'description': sub['description'] ?? 'Explorez cette catégorie passionnante.',
           'icon': _getIconForCategory(sub['category_name']),
         }).toList();
         
@@ -110,7 +88,13 @@ class _SubscribeThemesScreenState extends State<SubscribeThemesScreen> {
     setState(() => isSaving = true);
 
     try {
-      final success = await _subscriptionService.updateUserSubscriptions(subscribed.toList());
+      // Préparer les données au format attendu par l'API
+      final subscriptions = themes.map((theme) => {
+        'category_id': theme['category_id'],
+        'subscribed': subscribed.contains(theme['name']),
+      }).toList();
+
+      final success = await _subscriptionService.updateUserSubscriptions(subscriptions);
 
       if (mounted) {
         if (success) {
