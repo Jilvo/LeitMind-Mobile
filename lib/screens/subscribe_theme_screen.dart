@@ -45,7 +45,9 @@ class _SubscribeThemesScreenState extends State<SubscribeThemesScreen> {
 
   Future<void> _loadSubscriptions() async {
     try {
+      print('🔄 Chargement des abonnements...');
       final subscriptions = await _subscriptionService.getUserSubscriptions();
+      print('📋 Abonnements reçus: $subscriptions');
       
       setState(() {
         themes = subscriptions.map((sub) => {
@@ -55,14 +57,22 @@ class _SubscribeThemesScreenState extends State<SubscribeThemesScreen> {
           'icon': _getIconForCategory(sub['category_name']),
         }).toList();
         
+        // Debug: montrer tous les abonnements avant filtrage
+        print('🔍 Tous les abonnements:');
+        for (var sub in subscriptions) {
+          print('   - ${sub['category_name']}: subscribed = ${sub['subscribed']}');
+        }
+        
         subscribed = subscriptions
             .where((sub) => sub['subscribed'] == true)
             .map((sub) => sub['category_name'] as String)
             .toSet();
         
+        print('✅ Catégories finalement marquées comme abonnées: $subscribed');
         isLoading = false;
       });
     } catch (e) {
+      print('💥 Erreur lors du chargement: $e');
       setState(() {
         isLoading = false;
       });
@@ -85,35 +95,59 @@ class _SubscribeThemesScreenState extends State<SubscribeThemesScreen> {
   }
 
   Future<void> submitPreferences() async {
+    print('🔄 Début de submitPreferences');
     setState(() => isSaving = true);
 
     try {
+      print('📝 Themes disponibles: ${themes.length}');
+      print('🔍 Détail des themes: $themes');
+      print('✅ Catégories sélectionnées: $subscribed');
+      
+      // Debug: vérifier le contenu des themes avant filtrage
+      for (var theme in themes) {
+        final themeName = theme['name'];
+        final isSelected = subscribed.contains(themeName);
+        print('🎯 Theme: "$themeName" - Selected: $isSelected');
+      }
+      
       // Préparer les données au format attendu par l'API
-      final subscriptions = themes.map((theme) => {
-        'category_id': theme['category_id'],
-        'subscribed': subscribed.contains(theme['name']),
-      }).toList();
+      // Envoyer TOUTES les catégories avec leur état (true/false)
+      final subscriptions = themes
+          .map((theme) => {
+            'category_id': theme['category_id'],
+            'subscribed': subscribed.contains(theme['name']),
+          }).toList();
 
+      print('📤 Données à envoyer: $subscriptions');
+      print('📊 Nombre de subscriptions: ${subscriptions.length}');
+      print('🌐 Appel du service...');
+      
       final success = await _subscriptionService.updateUserSubscriptions(subscriptions);
+      
+      print('📋 Résultat du service: $success');
 
       if (mounted) {
         if (success) {
+          print('✅ Succès - Affichage du message de succès');
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text("Préférences enregistrées")),
           );
         } else {
+          print('❌ Échec - Affichage du message d\'erreur');
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text("Erreur lors de l'enregistrement")),
           );
         }
       }
     } catch (e) {
+      print('💥 Exception capturée: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Erreur lors de l'enregistrement")),
         );
       }
     } finally {
+      print('🏁 Fin de submitPreferences - isSaving = false');
       if (mounted) setState(() => isSaving = false);
     }
   }

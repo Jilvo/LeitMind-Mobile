@@ -9,47 +9,42 @@ class QuestionService {
   final http.Client client = CustomHttpClient();
 
   Future<List<Map<String, dynamic>>> getDailyQuestions() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('token');
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
 
-      if (token == null) {
-        throw Exception('Token non trouvé');
+    if (token == null) {
+      throw Exception('Token non trouvé');
+    }
+
+    final response = await client.get(
+      Uri.parse('$baseUrl/questions/questions/daily_questions'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // Forcer l'encodage UTF-8 pour les caractères spéciaux
+      final String responseBody = utf8.decode(response.bodyBytes);
+      final Map<String, dynamic> data = jsonDecode(responseBody);
+      print('Response data: $data'); // Debug log
+
+      // La réponse utilise 'daily_questions' au lieu de 'message'
+      if (data['daily_questions'] == null) {
+        print('Warning: daily_questions is null in response');
+        return [];
       }
 
-      final response = await client.get(
-        Uri.parse('$baseUrl/questions/questions/daily_questions'),
-        headers: {
-          'Authorization': 'Bearer $token',
-        },
-      );
-
-      if (response.statusCode == 200) {
-        // Forcer l'encodage UTF-8 pour les caractères spéciaux
-        final String responseBody = utf8.decode(response.bodyBytes);
-        final Map<String, dynamic> data = jsonDecode(responseBody);
-        print('Response data: $data'); // Debug log
-        
-        // La réponse utilise 'daily_questions' au lieu de 'message'
-        if (data['daily_questions'] == null) {
-          print('Warning: daily_questions is null in response');
-          return [];
-        }
-        
-        if (data['daily_questions'] is! List) {
-          print('Warning: daily_questions is not a List, it is: ${data['daily_questions'].runtimeType}');
-          return [];
-        }
-        
-        final List<dynamic> questions = data['daily_questions'];
-        return questions.map((q) => q as Map<String, dynamic>).toList();
-      } else {
-        print('HTTP Error: ${response.statusCode} - ${response.body}');
-        throw Exception('Erreur lors de la récupération des questions');
+      if (data['daily_questions'] is! List) {
+        print('Warning: daily_questions is not a List, it is: ${data['daily_questions'].runtimeType}');
+        return [];
       }
-    } catch (e) {
-      print('Erreur QuestionService: $e');
-      return [];
+
+      final List<dynamic> questions = data['daily_questions'];
+      return questions.map((q) => q as Map<String, dynamic>).toList();
+    } else {
+      print('HTTP Error: ${response.statusCode} - ${response.body}');
+      throw response;
     }
   }
 

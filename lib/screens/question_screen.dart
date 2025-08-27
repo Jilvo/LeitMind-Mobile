@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/question_service.dart';
 
@@ -27,6 +30,8 @@ class _QuestionScreenState extends State<QuestionScreen> {
     _loadDailyQuestions();
   }
 
+  String? errorMessage;
+
   Future<void> _loadDailyQuestions() async {
     try {
       final dailyQuestions = await _questionService.getDailyQuestions();
@@ -34,11 +39,18 @@ class _QuestionScreenState extends State<QuestionScreen> {
         questions = dailyQuestions;
         isLoading = false;
         hasError = dailyQuestions.isEmpty;
+        errorMessage = null;
       });
     } catch (e) {
+      String? apiMessage;
+      if (e is http.Response && e.statusCode == 429) {
+        final data = jsonDecode(e.body);
+        apiMessage = data['message']?.toString();
+      }
       setState(() {
         isLoading = false;
         hasError = true;
+        errorMessage = apiMessage ?? "Erreur de chargement";
       });
     }
   }
@@ -196,14 +208,15 @@ class _QuestionScreenState extends State<QuestionScreen> {
           ),
           iconTheme: const IconThemeData(color: Color(0xFF3B3F9F)),
         ),
-        body: const Center(
+        body: Center(
           child: Text(
-            "Revenez demain",
-            style: TextStyle(
+            errorMessage ?? "Revenaez demain",
+            style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w600,
               color: Colors.grey,
             ),
+            textAlign: TextAlign.center,
           ),
         ),
       );

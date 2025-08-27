@@ -26,8 +26,11 @@ class SubscriptionService {
       );
 
       if (response.statusCode == 200) {
-        final Map<String, dynamic> data = jsonDecode(response.body);
+        final String responseBody = utf8.decode(response.bodyBytes);
+        final Map<String, dynamic> data = jsonDecode(responseBody);
+        print('📡 Response getUserSubscriptions: $data');
         final List<dynamic> subscriptions = data['subscription']['subscriptions'];
+        print('📋 Subscriptions extraites: $subscriptions');
         return subscriptions.map((sub) => sub as Map<String, dynamic>).toList();
       } else {
         throw Exception('Erreur lors de la récupération des abonnements');
@@ -44,21 +47,41 @@ class SubscriptionService {
       final token = prefs.getString('token');
       final userId = prefs.getString('userId');
 
+      print('🔑 Token: ${token != null ? 'OK' : 'MANQUANT'}');
+      print('👤 UserId: $userId');
+
       if (token == null || userId == null) {
+        print('❌ Token ou userId manquant');
         throw Exception('Token ou utilisateur non trouvé');
       }
 
+      final url = '$baseUrl/subscription/subscriptions/user/$userId';
+      final body = jsonEncode({'subscriptions': subscriptions});
+      
+      print('🌐 URL: $url');
+      print('📝 Body: $body');
+      
+      // Vérifier si le tableau est vide
+      if (subscriptions.isEmpty) {
+        print('⚠️  Tableau de subscriptions vide - Envoi quand même...');
+      }
+
       final response = await client.post(
-        Uri.parse('$baseUrl/subscription/subscriptions/user/$userId'),
+        Uri.parse(url),
         headers: {
           'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
-        body: jsonEncode({'subscriptions': subscriptions}),
+        body: body,
       );
+
+      print('📡 Status Code: ${response.statusCode}');
+      print('📄 Response Body: ${response.body}');
 
       return response.statusCode == 200;
     } catch (e) {
-      print('Erreur lors de la mise à jour des abonnements: $e');
+      print('💥 Erreur lors de la mise à jour des abonnements: $e');
       return false;
     }
   }

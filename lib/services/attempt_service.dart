@@ -18,21 +18,43 @@ class AttemptService {
         throw Exception('Token ou utilisateur non trouvé');
       }
 
+      print('🔄 Récupération des tentatives pour userId: $userId');
+      print('🔑 Token disponible: ${token.isNotEmpty}');
+      final url = '$baseUrl/attempt/attempts/user/$userId';
+      print('🌐 URL: $url');
+
       final response = await client.get(
-        Uri.parse('$baseUrl/attempt/attempts/user/$userId'),
+        Uri.parse(url),
         headers: {
+          'accept': 'application/json',
           'Authorization': 'Bearer $token',
         },
       );
 
+      print('📡 Status Code: ${response.statusCode}');
+
       if (response.statusCode == 200) {
-        final List<dynamic> data = jsonDecode(response.body);
-        return data.map((attempt) => attempt as Map<String, dynamic>).toList();
+        // Forcer l'encodage UTF-8 pour les caractères spéciaux
+        final String responseBody = utf8.decode(response.bodyBytes);
+        print('📄 Response Body: $responseBody');
+        
+        // La réponse est un objet avec une clé "attempts" qui contient l'array
+        final Map<String, dynamic> data = jsonDecode(responseBody);
+        
+        if (data['attempts'] == null) {
+          print('⚠️  Pas de clé "attempts" dans la réponse');
+          return [];
+        }
+        
+        final List<dynamic> attempts = data['attempts'];
+        print('📋 Tentatives récupérées: ${attempts.length}');
+        return attempts.map((attempt) => attempt as Map<String, dynamic>).toList();
       } else {
+        print('❌ Erreur HTTP: ${response.statusCode} - ${response.body}');
         throw Exception('Erreur lors de la récupération des tentatives');
       }
     } catch (e) {
-      print('Erreur AttemptService: $e');
+      print('💥 Erreur AttemptService: $e');
       return [];
     }
   }

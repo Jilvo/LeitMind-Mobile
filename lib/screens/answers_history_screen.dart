@@ -67,7 +67,9 @@ class _AnswersHistoryScreenState extends State<AnswersHistoryScreen> {
         itemCount: history.length,
         itemBuilder: (context, index) {
           final item = history[index];
-          final isCorrect = item['correct'] as bool? ?? false;
+          print('📄 Item $index: $item');
+
+          final isCorrect = item['is_correct'] as bool? ?? false;
           final question = item['question']?.toString() ?? 'Question non disponible';
           final answer = item['answer']?.toString() ?? 'Réponse non disponible';
 
