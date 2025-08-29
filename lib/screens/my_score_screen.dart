@@ -120,15 +120,15 @@ class _MyScoreScreenState extends State<MyScoreScreen> {
         'color': Colors.yellow.shade100,
       },
       {
-        'title': 'Série de réponses',
+        'title': 'Série de bonnes réponses',
         'value': '${scoringData!['consecutive_answer_streak'] ?? 0}',
         'icon': Icons.local_fire_department_outlined,
         'color': Colors.red.shade100,
       },
       {
-        'title': 'Série globale',
-        'value': '${scoringData!['global_streak'] ?? 0} jours',
-        'icon': Icons.trending_up_outlined,
+        'title': 'Meilleure série de bonnes réponses',
+        'value': '${scoringData!['best_consecutive_answer_streak'] ?? 0}',
+        'icon': Icons.emoji_events,
         'color': Colors.purple.shade100,
       },
     ];

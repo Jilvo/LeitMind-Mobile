@@ -84,7 +84,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
               items: const [
                 DropdownMenuItem(value: 'points', child: Text('Par points')),
                 DropdownMenuItem(value: 'questions', child: Text('Par questions répondues')),
-                DropdownMenuItem(value: 'streak', child: Text('Par série de jours')),
+                DropdownMenuItem(value: 'streak', child: Text('Par série consécutive de bonnes réponses')),
               ],
               onChanged: (value) => setState(() => selectedCriterion = value!),
             ),

@@ -205,25 +205,25 @@ class _HomeScreenState extends State<HomeScreen> {
                     textStyle: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),const SizedBox(height: 16),
-                OutlinedButton.icon(
-                  onPressed: () {
-                    // Logique d’abonnement ou navigation
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Fonction 'S’abonner' à venir !")),
-                    );
-                  },
-                  icon: const Icon(Icons.add_circle_outline),
-                  label: const Text("Stats (Admin)"),
-                  style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Color(0xFF3B3F9F)),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    foregroundColor: const Color(0xFF3B3F9F),
-                    textStyle: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
+                // OutlinedButton.icon(
+                //   onPressed: () {
+                //     // Logique d’abonnement ou navigation
+                //     ScaffoldMessenger.of(context).showSnackBar(
+                //       const SnackBar(content: Text("Fonction 'Admin' à venir !")),
+                //     );
+                //   },
+                //   icon: const Icon(Icons.add_circle_outline),
+                //   label: const Text("Stats (Admin)"),
+                //   style: OutlinedButton.styleFrom(
+                //     side: const BorderSide(color: Color(0xFF3B3F9F)),
+                //     padding: const EdgeInsets.symmetric(vertical: 16),
+                //     shape: RoundedRectangleBorder(
+                //       borderRadius: BorderRadius.circular(16),
+                //     ),
+                //     foregroundColor: const Color(0xFF3B3F9F),
+                //     textStyle: const TextStyle(fontWeight: FontWeight.bold),
+                //   ),
+                // ),
               ],
             ),
           ],
